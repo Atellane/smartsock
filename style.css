@@ -1,0 +1,28 @@
+header {
+    text-align: right;
+    padding: 30px;
+}
+
+.row h1 {
+    text-align: center;
+    margin-top: 100px;
+} 
+
+.row p {
+    text-align: center;
+    margin-top:50px;
+    position:fixe;
+} 
+
+.row2 h2 {
+    text-align: center;
+    padding: 30px;
+    position:fixe;
+} 
+
+.row2 nav {
+    text-align: center;
+    padding: 10px;
+    position:fixe;
+    display:inline-block;
+} 

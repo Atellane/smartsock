@@ -1,0 +1,13 @@
+beautifulsoup4==4.12.3
+certifi==2024.8.30
+charset-normalizer==3.4.0
+DigitalPressureSensor==1.0.0
+groove==1.0.4
+idna==3.10
+pydantic==1.10.19
+pyhumps==3.8.0
+requests==2.32.3
+smbus==1.1.post2
+soupsieve==2.6
+typing_extensions==4.12.2
+urllib3==2.2.3
