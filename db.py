@@ -31,7 +31,7 @@ class Db():
         creates our project's database
         """
         self.cur.execute("""
-                         CREATE TABLE users
+                         CREATE TABLE IF NOT EXISTS users
                          (
                             username TEXT NOT NULL,
                             password TEXT NOT NULL,
@@ -39,7 +39,7 @@ class Db():
                           );
                           """)
         self.cur.execute("""
-                         CREATE TABLE socks
+                         CREATE TABLE IF NOT EXISTS socks
                          (
                             name TEXT NOT NULL,
                             proprietary TEXT NOT NULL,
@@ -51,7 +51,7 @@ class Db():
                           );
                           """)
         self.cur.execute("""
-                         CREATE TABLE tokens
+                         CREATE TABLE IF NOT EXISTS tokens
                          (
                             token CHAR(32) NOT NULL,
                             user TEXT NOT NULL,
@@ -61,14 +61,29 @@ class Db():
                           );
                          """)
         self.cur.execute("""
-                         CREATE TABLE usage_history
+                         CREATE TABLE IF NOT EXISTS usage_history
                          (
-                            id INTEGER AUTOINCREMENT NOT NULL,
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                             sock TEXT NOT NULL,
                             proprietary TEXT NOT NULL,
-                            PRIMARY KEY (id),
-                            FOREIGN KEY (sock, proprietary) REFERENCES socks(name, proprietary)
+                            beginning_id INT NOT NULL REFERENCES beginning(id)
+                            ON DELETE CASCADE ON UPDATE CASCADE,
+                            ending_id INT REFERENCES ending(id)
                             ON DELETE CASCADE ON UPDATE CASCADE
+                          );
+                         """)
+        self.cur.execute("""
+                         CREATE TABLE IF NOT EXISTS beginning
+                         (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                          );
+                         """)
+        self.cur.execute("""
+                         CREATE TABLE IF NOT EXISTS ending
+                         (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
                           );
                          """)
 
@@ -77,21 +92,20 @@ class Db():
         hyp:
         deletes our project's database
         """
-        self.cur.execute("DROP TABLE tokens;")
-        self.cur.execute("DROP TABLE socks;")
-        self.cur.execute("DROP TABLE users;")
+        self.cur.execute("DROP TABLE IF EXISTS tokens;")
+        self.cur.execute("DROP TABLE IF EXISTS socks;")
+        self.cur.execute("DROP TABLE IF EXISTS users;")
+        self.cur.execute("DROP TABLE IF EXISTS usage_history;")
+        self.cur.execute("DROP TABLE IF EXISTS beginning;")
+        self.cur.execute("DROP TABLE IF EXISTS ending;")
 
     def reinitialize_database(self: object) -> None:
         """
         hyp:
         recreates a blank database
         """
-        try:
-            self.__delete_db()
-            self.__create_db()
-        except sqlite3.OperationalError as e:
-            print(e)
-            self.__create_db()
+        self.__delete_db()
+        self.__create_db()
 
     def create_user(self: object, username: str, password: str) -> None:
         """
@@ -150,5 +164,5 @@ if __name__ == '__main__':
     except VerifyMismatchError:
         print("wrong password :(")
     print(db.cur.execute("SELECT * FROM tokens").fetchall())
-    db.create_socks("testsocks", user["username"], None, "in the box", str(time())+":"+str(time()))
+    db.create_socks("testsocks", user["username"], None, "in the box")
     print(db.cur.execute("SELECT * FROM socks").fetchall())
