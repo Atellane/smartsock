@@ -1,0 +1,487 @@
+/* Global styles */
+
+
+body {
+    margin: 0;
+    font-family: 'Goldman', cursive;
+    background: radial-gradient(circle, #48C980 0%, #323944 100%), url('logo.png'); /* Fond dégradé avec image */
+    background-size: cover; /* L'image couvre entièrement l'écran sans être coupée */
+    background-repeat: no-repeat; /* Pas de répétition de l'image */
+    background-position: center top; /* Centrage de l'image sans décalage vertical */
+    color: #fff;
+    height: 100vh;
+    position: relative;
+}
+
+
+body::before {
+    content: ""; /* Crée un pseudo-élément */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('logo.png'); /* Ajoutez l'URL de votre image ici */
+    background-size: 50%; /* Réduit la taille de l'image à 50% de ses dimensions d'origine */
+    background-repeat: no-repeat; /* Empêche la répétition de l'image */
+    background-position: center 50px; /* Remonte de 50px */
+    /* Centre l'image horizontalement et la remonte verticalement */
+    opacity: 0.2; /* Ajustez l'opacité de l'image */
+    z-index: -1; /* S'assure que l'image est derrière tout le contenu */
+}
+
+/* Header (bannière) */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #141313, #F11960);
+    color: black;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    height: 60px;
+}
+
+/* Logo */
+header .logo img {
+    height: 70px;
+    width: auto;
+}
+
+/* User info section */
+header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacement entre "Hey, username!" et l'image */
+}
+
+/* Texte "Hey, username!" */
+header .user-info .username {
+    font-size: 1.2rem;
+    color: #000000;
+    font-weight: bold;
+}
+
+/* Image de profil */
+header .user-info .profile-pic {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%; /* Rond */
+    border: 2px solid #000000; /* Bordure blanche pour contraste */
+    cursor: pointer; /* Curseur interactif */
+    object-fit: cover; /* Assure un remplissage harmonieux */
+}
+
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav .btn {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    background-color: transparent; /* Fond transparent par défaut */
+    border: 2px solid #000; /* Bordure noire */
+    border-radius: 5px;
+    font-size: 1.1rem;
+    text-align: center;
+    transition: all 0.3s ease; /* Transition fluide pour tous les changements */
+}
+
+nav:nth-child(2) {
+    margin-right: 35px;
+
+}
+
+/* Au survol ou au clic, le bouton devient blanc */
+nav .btn:hover, nav .btn:focus {
+    background-color: #fff; /* Fond blanc au survol ou focus */
+    color: #F11960; /* Texte en rose */
+    border-color: #F11960; /* Bordure rose */
+}
+
+/* Main content */
+.content {
+    margin-top: 150px; /* Décale le contenu sous la bannière */
+    text-align: center;
+    padding: 50px 20px;
+    font-weight: bold;
+}
+
+.content h1 {
+    font-size: 3rem;
+    color: #141313;
+    margin: 0;
+    font-weight: bold; /* Texte "Bienvenue sur Smartsock²" en gras */
+}
+
+.content span {
+    display: block; /* Permet de faire revenir à la ligne "Smartsock²" */
+    font-size: 3.5rem; 
+    font-weight: bold;/* Taille de police ajustée pour "Smartsock²" */
+}
+
+/* Encadré de saisie pour "Nom d'utilisateur" et "Mot de passe" */
+.input-box {
+    margin-top: 30px; /* Espace sous le titre */
+    background-color: #D9D9D9;
+    padding: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    box-sizing: border-box; /* Assure que le padding et la bordure sont inclus dans la largeur */
+}
+
+.input-box input {
+    width: 100%; /* Prend 100% de la largeur du parent */
+    padding: 12px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    opacity: 0.34; /* Opacité du texte à 34% */
+    box-sizing: border-box; /* Inclut les bordures et padding dans la largeur */
+}
+
+/* Encadré du bouton S'inscrire */
+.submit-box {
+    margin-top: 40px; /* Espace sous les champs de saisie */
+}
+
+.submit-btn {
+    background-color: #F11960; /* Fond rose */
+    color: black; /* Texte noir */
+    border: none; /* Pas de bordure */
+    padding: 15px 50px; /* Augmenter la taille du bouton */
+    font-size: 1.4rem; /* Augmenter la taille du texte */
+    cursor: pointer; /* Curseur pointer pour l'interaction */
+    width: auto; /* Taille ajustée en fonction du texte */
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* Centré */
+    text-align: center; /* Centrer le texte dans le bouton */
+    border-radius: 0; /* Coins carrés */
+    font-family: 'Goldman', cursive; /* Appliquer la police Goldman */
+}
+
+/* Effet au survol du bouton */
+.submit-btn:hover {
+    background-color: #e01450; /* Changer la couleur de fond au survol */
+}
+
+/* Texte sous le bouton */
+.already-account {
+    text-align: center; /* Centre le texte */
+    margin-top: 20px; /* Espace au-dessus du texte */
+    font-size: 1rem; /* Taille de la police */
+    color: #000000; /* Couleur du texte (blanc pour le contraste) */
+}
+
+.already-account a {
+    color: #0769b9; /* Couleur du lien (rose comme le thème) */
+    text-decoration: none; /* Supprime le soulignement */
+    font-weight: bold; /* Met "Se connecter" en gras */
+}
+
+.already-account a:hover {
+    text-decoration: underline; /* Ajoute un soulignement au survol */
+}
+
+/* Global styles */
+body {
+    margin: 0;
+    font-family: 'Goldman', cursive;
+    background: radial-gradient(circle, #48C980 0%, #323944 100%);
+    color: #fff;
+    height: 100vh;
+    position: relative;
+}
+
+/* Header (banner) */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #141313, #F11960);
+    color: black;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    height: 60px;
+    overflow: hidden;
+}
+
+header .logo img {
+    height: 70px;
+    width: auto;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav .user-info {
+    display: flex;
+    align-items: center;
+}
+
+nav .username {
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+nav .profile-link img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
+/* Main content */
+.main-content {
+    margin-top: 150px; /* Décale le contenu sous la bannière */
+    text-align: center;
+    padding: 50px 20px;
+}
+
+/* Conteneur du bouton + et du texte */
+.create-box-container {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Plus d'espace entre le bouton et le texte */
+    position: absolute;
+    top: 50%; /* Positionne le conteneur au milieu de la page verticalement */
+    left: 5%; /* Positionne à gauche */
+    transform: translateY(-50%); /* Centre parfaitement verticalement */
+}
+
+/* Bouton + */
+.create-box-btn {
+    background-color: #21B9D3; /* Fond bleu */
+    color: rgb(255, 255, 255);
+    font-size: 4rem; /* Augmente la taille de la croix */
+    width: 90px; /* Taille plus grande */
+    height: 90px; /* Taille plus grande */
+    border-radius: 15px; /* Coins arrondis */
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-box-btn:hover {
+    background-color: #189db3; /* Change la couleur au survol */
+}
+
+/* Texte "Créer une nouvelle boîte" */
+.create-box-text {
+    background-color: #D9D9D94F; /* Couleur de fond */
+    opacity: 0.6; /* Moins opaque */
+    padding: 15px 30px; /* Augmenter l'espacement interne */
+    font-size: 2rem; /* Augmenter la taille du texte */
+    border-radius: 15px; /* Bord arrondi */
+    font-weight: bold;
+    width: 500px; /* Augmenter la largeur de l'encadré */
+    height: 60px; /* Augmenter la hauteur de l'encadré */
+    display: flex;
+    justify-content: center; /* Centrer le texte horizontalement */
+    align-items: center; /* Centrer le texte verticalement */
+}
+
+/* Conteneur de la boîte */
+.box-selection-container {
+    overflow-y: auto;
+    background-color: #D9D9D959; /* Fond semi-transparent */
+    border: 1px solid #30550F; /* Bordure verte autour de l'encadré */
+    padding: 20px;
+    width: 80%; /* Ajustez la largeur du conteneur */
+    margin: 30px auto; /* Centre le conteneur horizontalement */
+    border-radius: 10px; /* Coins arrondis */
+    box-sizing: border-box; /* Inclut les bordures dans la taille du conteneur */
+}
+
+/* Titre de la section "Sélectionner votre boîte" */
+.box-title {
+    font-size: 1.5rem; /* Taille du texte */
+    color: #30550F; /* Couleur du texte verte */
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #30550F; /* Bordure verte autour du titre */
+    margin-bottom: 20px; /* Espace sous le titre */
+    border-radius: 5px; /* Coins arrondis */
+}
+
+/* Style du tableau */
+.box-table {
+    width: 100%; /* Prend toute la largeur du conteneur */
+    border-collapse: collapse; /* Supprime les espaces entre les cellules */
+}
+
+/* Style des en-têtes du tableau */
+.box-table th {
+    background-color: #30550F; /* Couleur de fond verte pour l'en-tête */
+    color: black; /* Couleur du texte blanche */
+    padding: 10px;
+    text-align: left;
+}
+
+/* Style des cellules du tableau */
+.box-table td {
+    border: 1px solid #30550F; /* Bordure verte autour des cellules */
+    padding: 10px;
+    text-align: left;
+}
+
+/* Style du tableau vide */
+.box-table tbody {
+    display:table-row-group;/* Couleur de fond du tableau (légère) */
+}
+
+/* Conteneur principal en flexbox */
+.main-container {
+    display: flex;
+    justify-content: space-between; /* Espace entre les deux sections (gauche et droite) */
+    align-items: flex-start; /* Aligne verticalement les sections en haut */
+    width: 100%;
+    height: 100px; /* Prend toute la hauteur de la page */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Section gauche (bouton et encadré) */
+.left-section {
+    width: 40%; /* Réduit la largeur de la section gauche pour laisser de la place à la droite */
+    padding: 20px;
+    display: flex;
+    flex-direction: column; /* Aligne verticalement le bouton et le textewhite */
+    justify-content: center; /* Centrer verticalement les éléments */
+}
+
+/* Section droite (tableau) */
+.right-section {
+    width: 55%; /* Section à droite du tableau avec plus de largeur */
+    padding: 20px;
+    margin-top: 110px;
+    height: 1000px;
+}
+
+
+.empty-message {
+    color: #555; /* Gris clair pour le texte */
+    display: none; /* L'affiche en tant que ligne de tableau */
+    opacity: 0.5;
+    text-align: center;
+    font-style: italic;
+    height: 500px;  /* Peut être ajusté selon l'espacement */
+}
+
+
+
+
+/* Style du tableau */
+.box-table {
+
+    width: 100%;
+    border-collapse: collapse; /* Pour que les bordures ne se doublent pas */
+}
+
+.box-table td, .box-table th {
+    border: 1px solid #30550F; /* Bordure verte */
+    padding: 10px;
+    text-align: left;
+}
+
+.box-table th {
+    background-color: #30550F;
+    color: white;
+}
+
+.box-table th {
+    color:#ffffff;
+}
+
+/* Style des boutons */
+.box-table button {
+    background-color: #30550F;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.box-table button:hover {
+    background-color: #4B7C2C;
+}
+
+.box-table tr {
+    display: table-row;
+}
+
+/* Menu déroulant */
+.dropdown-menu {
+    position: absolute;
+    top: 60px; /* Pour positionner le menu juste en dessous du logo */
+    left: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    display: none; /* Le menu est caché par défaut */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 200px; /* Largeur du menu */
+    z-index: 10;
+}
+
+.logout-btn {
+    background-color: #F11960;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.logout-btn:hover {
+    background-color: #e01450;
+}
+
+/* Style du menu déroulant */
+.dropdown-menu {
+    display: none; /* Cache le menu par défaut */
+    position: absolute; /* Pour positionner le menu de manière dynamique */
+    background-color: #30550F;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* Ajuste le menu pour qu'il soit sous la photo de profil */
+.profile-pic {
+    width: 40px;  /* Taille de la photo de profil */
+    height: 40px; /* Taille de la photo de profil */
+    border-radius: 50%; /* Forme circulaire */
+    cursor: pointer; /* Indique que l'image est cliquable */
+}
+
+/* Ajoute un petit espace entre la photo de profil et le menu */
+#dropdown-menu {
+    top: 50px; /* Place le menu à 50px en dessous de la photo de profil */
+    left: 1665px; /* Décale le menu pour l'aligner avec la photo de profil */
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Smartsock</title>
+        <link rel="stylesheet" href="static/css/style2.css">
+        <link href="https://fonts.googleapis.com/css2?family=Goldman&display=swap" rel="stylesheet">
+        <style>
+        /* Style du menu déroulant */
+        .dropdown-menu {
+            display: none; /* Cache le menu par défaut */
+            position: absolute;
+            background-color: #30550F;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            right: 10px;
+            top: 60px; /* Positionner le menu sous la photo de profil */
+            z-index: 1000;
+        }
+
+        .dropdown-menu button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #4B7C2C;
+        }
+
+        /* Style de la photo de profil (PDP) */
+        .profile-pic {
+            width: 40px;  /* Taille de la photo de profil */
+            height: 40px; /* Taille de la photo de profil */
+            border-radius: 50%; /* Forme circulaire */
+            cursor: pointer; /* Indique que l'image est cliquable */
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px; /* Positionne la flèche en bas à gauche */
+            background-color: #30550F;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button:hover {
+            background-color: #4B7C2C;
+        }
+        </style>
+    </head>
+    <body>
+        <!-- Banner section -->
+        <header>
+            <div class="logo" id="logo">
+                <img src="static/assets/logo.png" alt="Logo">
+            </div>
+            <nav>
+                <div class="user-info">
+                    <span class="username">Hey, <span id="username-display">User</span>!</span>
+                    <!-- Photo de profil (PDP) -->
+                    <img src="static/assets/pdp.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <button onclick="logout()">Se déconnecter</button>
+            </div>
+            <!-- Main content -->
+            <div class="content">
+                <h1>Création de votre <span>boîte</span></h1>
+                <form id="creation-form">
+                    <!-- Encadré de saisie pour l'adresse IP du Rasperry Pi -->
+                    <div class="input-box">
+                        <input type="text" id="ip-address" name="ip-address" placeholder="Adresse IP du Rasperry Pi" required>
+                    </div>
+
+                    <!-- Encadré de saisie pour l'identifiant -->
+                    <div class="input-box">
+                        <input type="password" id="identifier" name="identifier" placeholder="Identifiant" required>
+                    </div>
+
+                    <!-- Bouton Créer -->
+                    <div class="submit-box">
+                        <button type="submit" class="submit-btn">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <!-- Footer Content -->
+        </footer>
+            <!-- Flèche de retour à la page précédente -->
+        <div class="back-button" onclick="window.history.back();">
+            &#8592; <!-- Code HTML pour une flèche de retour -->
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // S'assure que l'événement de soumission du formulaire est bien capté
+                document.getElementById('creation-form').addEventListener('submit', function(event) {
+                    event.preventDefault();  // Empêche la soumission classique du formulaire
+        
+                    // Vérification dans la console que l'événement est capté
+                    console.log('Formulaire soumis');
+                
+                    // Récupérer les valeurs des champs du formulaire
+                    var ipAddress = document.getElementById('ip-address').value;
+                    var identifier = document.getElementById('identifier').value;
+                
+                    // Vérifie si les données sont bien récupérées
+                    console.log('Adresse IP:', ipAddress);
+                    console.log('Identifiant:', identifier);
+                
+                    // Vérification si les champs sont remplis
+                    if (!ipAddress || !identifier) {
+                        console.error('Les champs sont vides !');
+                        return;  // Si l'un des champs est vide, on arrête l'exécution
+                    }
+                
+                    // Crée un objet avec les données récupérées
+                    var formData = {
+                        ip: ipAddress,
+                        id: identifier
+                    };
+                
+                    // Simulation d'envoi des données via une requête POST (remplacer '/create-box' par ton endpoint serveur)
+                    fetch('/create-box', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Réponse du serveur:', data);  // Vérification de la réponse du serveur
+                        // Après la création de la boîte, rediriger vers accueil.html
+                        window.location.href = 'accueil.html';  // Redirection vers la page d'accueil
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la création de la boîte:', error);
+                    });
+                });
+            });
+        </script>
+        
+        
+    </body>
+</html>

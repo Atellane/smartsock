@@ -1,0 +1,168 @@
+/* Global styles */
+
+
+body {
+    margin: 0;
+    font-family: 'Goldman', cursive;
+    background: radial-gradient(circle, #48C980 0%, #323944 100%);
+    color: #fff;
+    height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: ""; /* Crée un pseudo-élément */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('logo.png'); /* Ajoutez l'URL de votre image ici */
+    background-size: 50%; /* Réduit la taille de l'image à 50% de ses dimensions d'origine */
+    background-repeat: no-repeat; /* Empêche la répétition de l'image */
+    background-position: center -95px; /* Remonte de 50px */
+    /* Centre l'image horizontalement et la remonte verticalement */
+    opacity: 0.2; /* Ajustez l'opacité de l'image */
+    z-index: -1; /* S'assure que l'image est derrière tout le contenu */
+}
+
+/* Header (banner) */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #141313, #F11960); /* Gradient pour la bannière */
+    color: black;
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    height: 60px; /* Fixez une hauteur pour empêcher l'expansion */
+    overflow: hidden; /* Empêche le contenu (comme le logo) de dépasser */
+}
+
+header .logo img {
+    height: 70px; /* Augmente la hauteur du logo */
+    width: auto; /* Préserve les proportions */
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav .btn {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    background-color: transparent; /* Fond transparent par défaut */
+    border: 2px solid #000; /* Bordure noire */
+    border-radius: 5px;
+    font-size: 1.1rem;
+    text-align: center;
+    transition: all 0.3s ease; /* Transition fluide pour tous les changements */
+}
+
+nav:nth-child(2) {
+    margin-right: 35px;
+
+}
+
+/* Au survol ou au clic, le bouton devient blanc */
+nav .btn:hover, nav .btn:focus {
+    background-color: #fff; /* Fond blanc au survol ou focus */
+    color: #F11960; /* Texte en rose */
+    border-color: #F11960; /* Bordure rose */
+}
+
+/* Main content */
+.content {
+    margin-top: 150px; /* Décale le contenu sous la bannière */
+    text-align: center;
+    padding: 50px 20px;
+    font-weight: bold;
+}
+
+.content h1 {
+    font-size: 3rem;
+    color: #141313;
+    margin: 0;
+    font-weight: bold; /* Texte "Bienvenue sur Smartsock²" en gras */
+}
+
+.content span {
+    display: block; /* Permet de faire revenir à la ligne "Smartsock²" */
+    font-size: 3.5rem; 
+    font-weight: bold;/* Taille de police ajustée pour "Smartsock²" */
+}
+
+/* Encadré de saisie pour "Nom d'utilisateur" et "Mot de passe" */
+.input-box {
+    margin-top: 30px; /* Espace sous le titre */
+    background-color: #D9D9D9;
+    padding: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    box-sizing: border-box; /* Assure que le padding et la bordure sont inclus dans la largeur */
+}
+
+.input-box input {
+    width: 100%; /* Prend 100% de la largeur du parent */
+    padding: 12px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    opacity: 0.34; /* Opacité du texte à 34% */
+    box-sizing: border-box; /* Inclut les bordures et padding dans la largeur */
+}
+
+/* Encadré du bouton S'inscrire */
+.submit-box {
+    margin-top: 40px; /* Espace sous les champs de saisie */
+}
+
+.submit-btn {
+    background-color: #F11960; /* Fond rose */
+    color: black; /* Texte noir */
+    border: none; /* Pas de bordure */
+    padding: 15px 50px; /* Augmenter la taille du bouton */
+    font-size: 1.4rem; /* Augmenter la taille du texte */
+    cursor: pointer; /* Curseur pointer pour l'interaction */
+    width: auto; /* Taille ajustée en fonction du texte */
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* Centré */
+    text-align: center; /* Centrer le texte dans le bouton */
+    border-radius: 0; /* Coins carrés */
+    font-family: 'Goldman', cursive; /* Appliquer la police Goldman */
+}
+
+/* Effet au survol du bouton */
+.submit-btn:hover {
+    background-color: #e01450; /* Changer la couleur de fond au survol */
+}
+
+/* Texte sous le bouton */
+.already-account {
+    text-align: center; /* Centre le texte */
+    margin-top: 20px; /* Espace au-dessus du texte */
+    font-size: 1rem; /* Taille de la police */
+    color: #000000; /* Couleur du texte (blanc pour le contraste) */
+}
+
+.already-account a {
+    color: #0769b9; /* Couleur du lien (rose comme le thème) */
+    text-decoration: none; /* Supprime le soulignement */
+    font-weight: bold; /* Met "Se connecter" en gras */
+}
+
+.already-account a:hover {
+    text-decoration: underline; /* Ajoute un soulignement au survol */
+}
+

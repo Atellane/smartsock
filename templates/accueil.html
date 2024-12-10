@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Smartsock</title>
+    <link rel="stylesheet" href="static/css/style2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Goldman&display=swap" rel="stylesheet">
+    <style>
+        /* Style du menu déroulant */
+        .dropdown-menu {
+            display: none; /* Cache le menu par défaut */
+            position: absolute;
+            background-color: #30550F;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            right: 10px;
+            top: 60px; /* Positionner le menu sous la photo de profil */
+            z-index: 1000;
+        }
+
+        .dropdown-menu button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #4B7C2C;
+        }
+
+        /* Style de la photo de profil (PDP) */
+        .profile-pic {
+            width: 40px;  /* Taille de la photo de profil */
+            height: 40px; /* Taille de la photo de profil */
+            border-radius: 50%; /* Forme circulaire */
+            cursor: pointer; /* Indique que l'image est cliquable */
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner section -->
+    
+    <header>
+        <div class="logo" id="logo">
+            <img src="static/assets/logo.png" alt="Logo">
+        </div>
+        <nav>
+            <div class="user-info">
+                <span class="username">Hey, <span id="username-display">User</span>!</span>
+                <!-- Photo de profil (PDP) -->
+                <img src="static/assets/pdp.png" alt="Profile Picture" class="profile-pic" id="profile-pic">
+            </div>
+        </nav>
+    </header>
+    
+
+    <main>
+        <div id="dropdown-menu" class="dropdown-menu">
+            <button onclick="logout()">Se déconnecter</button>
+        </div>
+        <div class="main-container">
+            <div class="left-section">
+                <div class="create-box-container">
+                    <button class="create-box-btn" onclick="window.location.href='creation.html';">
+                        <span class="plus-icon">+</span>
+                    </button>
+                    <div class="create-box-text">
+                        Créer une nouvelle boîte
+                    </div>
+                </div>
+            </div>
+        
+            <div class="right-section">
+                <div class="box-selection-container">
+                    <div class="box-title">Sélectionner votre boîte</div>
+                    <table class="box-table">
+                        <thead>
+                            <tr>
+                                <th>Nom de la boîte</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Message affiché quand il n'y a pas de boîtes -->
+                            <tr class="empty-message">
+                                <td colspan="2">Vous n'avez pas encore de boîtes...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="empty-message" style="display:none;">Aucune boîte disponible</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer></footer>
+    <script>
+        // Affiche ou cache le menu déroulant lors du clic sur la photo de profil
+        document.getElementById('profile-pic').addEventListener('click', function() {
+            var menu = document.getElementById('dropdown-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Fonction pour rediriger l'utilisateur vers la page de connexion
+        function logout() {
+            window.location.href = 'connexion.html';  // Redirection vers la page de connexion
+        }
+
+        // Affiche le nom de l'utilisateur (exemple)
+        var username = "JohnDoe";
+        document.getElementById("username-display").textContent = username;
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Sélectionne le tbody et le message vide
+            var tbody = document.querySelector(".box-table tbody");
+            var emptyMessage = document.querySelector(".empty-message");
+
+            // Exemple de données de boîtes (à remplacer par des données réelles)
+            var boxData = [];
+
+            // Si des boîtes existent
+            if (boxData.length > 0) {
+                emptyMessage.style.display = "none"; // Cache le message si des boîtes existent
+                
+                // Ajout des boîtes dans le tableau
+                boxData.forEach(function(box) {
+                    var tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${box.name}</td><td><button>${box.action}</button></td>`;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                emptyMessage.style.display = "table-row"; // Affiche le message si aucune boîte
+            }
+        });
+
+    </script>
+</body>
+</html>
