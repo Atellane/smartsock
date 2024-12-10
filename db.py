@@ -2,7 +2,6 @@ import sqlite3
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from secrets import token_hex
-from time import time
 
 
 class Db():
@@ -33,42 +32,26 @@ class Db():
         self.cur.execute("""
                          CREATE TABLE IF NOT EXISTS users
                          (
-                            username TEXT NOT NULL,
-                            password TEXT NOT NULL,
-                            PRIMARY KEY (username)
+                            username TEXT PRIMARY KEY NOT NULL,
+                            password TEXT NOT NULL
                           );
                           """)
         self.cur.execute("""
                          CREATE TABLE IF NOT EXISTS socks
                          (
                             name TEXT NOT NULL,
-                            proprietary TEXT NOT NULL,
+                            proprietary TEXT NOT NULL REFERENCES users(username)
+                            ON DELETE CASCADE ON UPDATE CASCADE,
                             color TEXT,
                             states TEXT NOT NULL,
-                            PRIMARY KEY (name, proprietary),
-                            FOREIGN KEY (proprietary) REFERENCES users(username)
-                            ON DELETE CASCADE ON UPDATE CASCADE
+                            PRIMARY KEY (name, proprietary)
                           );
                           """)
         self.cur.execute("""
                          CREATE TABLE IF NOT EXISTS tokens
                          (
-                            token CHAR(32) NOT NULL,
-                            user TEXT NOT NULL,
-                            PRIMARY KEY (token),
-                            FOREIGN KEY (user) REFERENCES users(username)
-                            ON DELETE CASCADE ON UPDATE CASCADE
-                          );
-                         """)
-        self.cur.execute("""
-                         CREATE TABLE IF NOT EXISTS usage_history
-                         (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            sock TEXT NOT NULL,
-                            proprietary TEXT NOT NULL,
-                            beginning_id INT NOT NULL REFERENCES beginning(id)
-                            ON DELETE CASCADE ON UPDATE CASCADE,
-                            ending_id INT REFERENCES ending(id)
+                            token CHAR(32) PRIMARY KEY NOT NULL,
+                            user TEXT NOT NULL REFERENCES users(username)
                             ON DELETE CASCADE ON UPDATE CASCADE
                           );
                          """)
@@ -76,14 +59,22 @@ class Db():
                          CREATE TABLE IF NOT EXISTS beginning
                          (
                             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                            sock TEXT NOT NULL,
+                            proprietary TEXT NOT NULL,
+                            FOREIGN KEY (sock, proprietary) REFERENCES socks(name, proprietary)
+                            ON DELETE CASCADE ON UPDATE CASCADE
                           );
                          """)
         self.cur.execute("""
                          CREATE TABLE IF NOT EXISTS ending
                          (
                             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                            sock TEXT NOT NULL,
+                            proprietary TEXT NOT NULL,
+                            FOREIGN KEY (sock, proprietary) REFERENCES socks(name, proprietary)
+                            ON DELETE CASCADE ON UPDATE CASCADE
                           );
                          """)
 
@@ -95,7 +86,6 @@ class Db():
         self.cur.execute("DROP TABLE IF EXISTS tokens;")
         self.cur.execute("DROP TABLE IF EXISTS socks;")
         self.cur.execute("DROP TABLE IF EXISTS users;")
-        self.cur.execute("DROP TABLE IF EXISTS usage_history;")
         self.cur.execute("DROP TABLE IF EXISTS beginning;")
         self.cur.execute("DROP TABLE IF EXISTS ending;")
 
@@ -121,6 +111,7 @@ class Db():
         """
         hyp:
         verify if the password is correct and if so returns the password hash
+        uses PasswordHasher which raise an exception when the password is incorrect
         """
         data = (username,)
         res = self.cur.execute("SELECT password FROM users WHERE username = ?", data)
@@ -141,8 +132,23 @@ class Db():
         self.cur.execute("INSERT INTO socks VALUES (:name, :proprietary, :color, :states)", data)
         self.con.commit()
 
-    def append_usage_history():
-        pass
+    def append_usage_history_begin(self: object, sock: str, proprietary: str) -> None:
+        """
+        hyp:
+        archive when a socks has been put in the box
+        """
+        data = {"sock": sock, "proprietary": proprietary}
+        self.cur.execute("INSERT INTO beginning (sock, proprietary) VALUES (:sock, :proprietary);", data)
+        self.con.commit()
+
+    def append_usage_history_end(self: object, sock: str, proprietary: str) -> None:
+        """
+        hyp:
+        archive when a socks has been removed from the box
+        """
+        data = {"sock": sock, "proprietary": proprietary}
+        self.cur.execute("INSERT INTO ending (sock, proprietary) VALUES (:sock, :proprietary);", data)
+        self.con.commit()
 
 
 if __name__ == '__main__':
@@ -163,6 +169,20 @@ if __name__ == '__main__':
         print(db.connect_user(user["username"], "testwrong"))
     except VerifyMismatchError:
         print("wrong password :(")
+    # verify if an authentification token has been properly created
     print(db.cur.execute("SELECT * FROM tokens").fetchall())
+    # try to create an example sock
     db.create_socks("testsocks", user["username"], None, "in the box")
-    print(db.cur.execute("SELECT * FROM socks").fetchall())
+    res = db.cur.execute("SELECT * FROM socks").fetchall()
+    print(res)
+    sock = res[0][0]
+    proprietary = res[0][1]
+    # try to simulate the archiving of the time where an hypothetic user would put the example sock in the box
+    db.append_usage_history_begin(sock, proprietary)
+    data = {"sock": sock, "proprietary": proprietary}
+    res = db.cur.execute("SELECT * FROM beginning WHERE sock=:sock AND proprietary=:proprietary;", data)
+    print(res.fetchall())
+    # try to simulate the archiving of the time where an hypothetic user would remove the example sock from the box
+    db.append_usage_history_end(sock, proprietary)
+    res = db.cur.execute("SELECT * FROM ending WHERE sock=:sock AND proprietary=:proprietary;", data)
+    print(res.fetchall())
