@@ -21,7 +21,7 @@ class Db():
         """
         con = None
         try:
-            con = sqlite3.connect(db_file)
+            con = sqlite3.connect(db_file, check_same_thread=False)
             print(f"{sqlite3.version = }")
         except sqlite3.Error as e:
             print(e)

@@ -3,17 +3,18 @@
     <head>
         <meta charset="utf-8">
         <title>Smartsock</title>
-        <link rel="stylesheet" href="static/css/style.css">
+        <link rel="stylesheet" href="../static/css/style.css">
+        <script src="../static/js/index.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Goldman&display=swap" rel="stylesheet">
     </head>
     <body>
         <!-- Banner section -->
         <header>
             <div class="logo">
-                <img src="static/assets/logo.png" alt="Logo"> <!-- Remplacez "logo.png" par votre logo -->
+                <img src="../static/assets/logo.png" alt="Logo"> <!-- Remplacez "logo.png" par votre logo -->
             </div>
             <nav>
-                <a href="#" class="btn">S'inscrire</a>
+                <a href="index.html" class="btn">S'inscrire</a>
                 <a href="connexion.html" class="btn btn-connect">Se connecter</a>
 
             </nav>
@@ -23,23 +24,26 @@
             <!-- Main content -->
             <div class="content">
                 <h1>Bienvenue sur <span>Smartsock²</span></h1>
-                <form>
+                <form onsubmit="create_user_account(event, this)">
                     <!-- Encadré de saisie pour le nom d'utilisateur -->
                     <div class="input-box">
-                        <input type="text" id="username" name="username" placeholder="Nom d'utilisateur">
+                        <label for="username">Nom d'utilisateur</label>
+                        <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
                     </div>
-
+                
                     <!-- Encadré de saisie pour le mot de passe -->
                     <div class="input-box">
-                        <input type="password" id="password" name="password" placeholder="Mot de passe">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
                     </div>
-
+                
                     <!-- Bouton S'inscrire -->
                     <div class="submit-box">
-                        <button class="submit-btn">S'inscrire</button>
+                        <button type="submit" class="submit-btn">S'inscrire</button>
                     </div>
+                
                     <div class="already-account">
-                        <p>Vous avez déjà un compte ? <a href="connexion.html">Se connecter.</a></p>
+                        <p>Vous avez déjà un compte ? <a href="connexion.html">Se connecter</a>.</p>
                     </div>
                 </form>
             </div>
@@ -48,15 +52,5 @@
         <footer>
             <!-- Footer Content -->
         </footer>
-        <script>
-            // Exemple d'événement pour soumettre le formulaire
-            document.querySelector("form").addEventListener("submit", function(event) {
-                event.preventDefault(); // Empêche le comportement de soumission par défaut
-        
-                // Simuler une connexion ou une inscription réussie
-                // Vous pouvez ajouter des validations ici si nécessaire
-                window.location.href = "accueil.html"; // Redirige vers la page d'accueil
-            });
-        </script>
     </body>
 </html>
