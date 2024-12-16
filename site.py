@@ -28,4 +28,4 @@ def connexion(request: Request) -> str:
 
 
 if __name__ == "__main__":
-    run(app, port=80)
+    run(app, host="0.0.0.0", port=80)
