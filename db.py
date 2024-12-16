@@ -8,12 +8,12 @@ from time import sleep, strftime, localtime
 
 
 class Db():
-    def __init__(self: object, db_file: str) -> object:
+    def __init__(self, db_file: str):
         self.__con = self.__create_connection(db_file)
         self.__cur = self.__con.cursor()
         self.reinitialize_database()
 
-    def __create_connection(self: object, db_file: str) -> sqlite3.Cursor:
+    def __create_connection(self, db_file: str) -> sqlite3.Connection:
         """
         hyp:
         create a database connection to a SQLite database
@@ -27,7 +27,7 @@ class Db():
             print(e)
         return con
 
-    def __create_db(self: object) -> None:
+    def __create_db(self) -> None:
         """
         hyp:
         creates our project's database
@@ -46,7 +46,8 @@ class Db():
                             owner TEXT NOT NULL REFERENCES users(username)
                             ON DELETE CASCADE ON UPDATE CASCADE,
                             color TEXT,
-                            state TEXT NOT NULL,
+                            dirty BOOL NOT NULL,
+                            in_box BOOL NOT NULL,
                             PRIMARY KEY (name, owner)
                           );
                           """)
@@ -81,7 +82,7 @@ class Db():
                           );
                          """)
 
-    def __delete_db(self: object) -> None:
+    def __delete_db(self) -> None:
         """
         hyp:
         deletes our project's database
@@ -92,7 +93,7 @@ class Db():
         self.__cur.execute("DROP TABLE IF EXISTS beginning;")
         self.__cur.execute("DROP TABLE IF EXISTS ending;")
 
-    def reinitialize_database(self: object) -> None:
+    def reinitialize_database(self) -> None:
         """
         hyp:
         recreates a blank database
@@ -100,7 +101,7 @@ class Db():
         self.__delete_db()
         self.__create_db()
 
-    def create_user(self: object, username: str, password: str) -> None:
+    def create_user(self, username: str, password: str) -> None:
         """
         hyp:
         creates user in the users database table
@@ -110,7 +111,7 @@ class Db():
         self.__cur.execute("INSERT INTO users VALUES (:username, :password)", data)
         self.__con.commit()
 
-    def connect_user(self: object, username: str, password: str) -> str:
+    def connect_user(self, username: str, password: str) -> str:
         """
         hyp:
         verify if the password is correct and if so returns the password hash
@@ -125,7 +126,7 @@ class Db():
             self.__con.commit()
             return token_auth
 
-    def disconnect_user(self: object, username: str, token_auth: str) -> None:
+    def disconnect_user(self, username: str, token_auth: str) -> None:
         """
         hyp:
         delete the authentification token from the database to disconnect the user
@@ -133,16 +134,16 @@ class Db():
         data = {"token": token_auth, "user": username}
         self.__cur.execute("DROP TABLE tokens WHERE token=:token AND user=:user", data)
 
-    def create_socks(self: object, name: str, owner: str, color: str, state: str) -> None:
+    def create_socks(self, name: str, owner: str, color: str, dirty: bool, in_box: bool) -> None:
         """
         hyp:
         creates sock in the socks database table
         """
-        data = {"name": name, "owner": owner, "color": color, "state": state}
-        self.__cur.execute("INSERT INTO socks VALUES (:name, :owner, :color, :state)", data)
+        data = {"name": name, "owner": owner, "color": color, "dirty": dirty, "in_box": in_box}
+        self.__cur.execute("INSERT INTO socks VALUES (:name, :owner, :color, :dirty, :in_box)", data)
         self.__con.commit()
 
-    def append_usage_history_begin(self: object, sock: str, owner: str) -> None:
+    def append_usage_history_begin(self, sock: str, owner: str) -> None:
         """
         hyp:
         archive when a socks has been put in the box
@@ -150,8 +151,9 @@ class Db():
         data = {"sock": sock, "owner": owner}
         self.__cur.execute("INSERT INTO beginning (sock, owner) VALUES (:sock, :owner);", data)
         self.__con.commit()
+        self.__cur.execute("UPDATE socks SET in_box=TRUE WHERE name=:sock AND owner=:owner", data)
 
-    def append_usage_history_end(self: object, sock: str, owner: str) -> None:
+    def append_usage_history_end(self, sock: str, owner: str) -> None:
         """
         hyp:
         archive when a socks has been removed from the box
@@ -159,43 +161,52 @@ class Db():
         data = {"sock": sock, "owner": owner}
         self.__cur.execute("INSERT INTO ending (sock, owner) VALUES (:sock, :owner);", data)
         self.__con.commit()
+        self.__cur.execute("UPDATE socks SET in_box=FALSE WHERE name=:sock AND owner=:owner", data)
 
-    def get_all_users(self: object) -> list:
+    def set_dirty(self, sock: str, owner: str, new_val: bool) -> None:
+        """
+        hyp:
+        Change the dirty attribute to new_val
+        """
+        data = {"sock": sock, "owner": owner, "dirty": new_val}
+        self.__cur.execute("UPDATE socks SET dirty=:dirty WHERE name=:sock AND owner=:owner", data)
+
+    def get_all_users(self) -> list:
         """
         hyp:
         returns all informations about all users in the database
         """
         return self.__cur.execute("SELECT * FROM users").fetchall()
 
-    def get_all_socks(self: object) -> list:
+    def get_all_socks(self) -> list:
         """
         hyp:
         returns all informations about all socks in the database
         """
         return self.__cur.execute("SELECT * FROM socks").fetchall()
 
-    def get_all_tokens(self: object) -> list:
+    def get_all_tokens(self) -> list:
         """
         hyp:
         returns all informations about all tokens in the database
         """
         return self.__cur.execute("SELECT * FROM tokens").fetchall()
 
-    def get_all_beginning(self: object) -> list:
+    def get_all_beginning(self) -> list:
         """
         hyp:
         returns all informations about all the entries in the database table beginning
         """
         return self.__cur.execute("SELECT * FROM beginning").fetchall()
 
-    def get_all_ending(self: object) -> list:
+    def get_all_ending(self) -> list:
         """
         hyp:
         returns all informations about all the entries in the database table ending
         """
         return self.__cur.execute("SELECT * FROM ending").fetchall()
 
-    def get_sock_beginning(self: object, name: str, owner: str) -> list:
+    def get_sock_beginning(self, name: str, owner: str) -> list:
         """
         hyp:
         returns the list of all the time where a unique sock has been put in the box based on its name and its owner
@@ -207,7 +218,7 @@ class Db():
                                 ORDER BY time DESC;""", data).fetchall()
         return [i[0] for i in query]
 
-    def get_sock_ending(self: object, name: str, owner: str) -> list:
+    def get_sock_ending(self, name: str, owner: str) -> list:
         """
         hyp:
         returns the list of all the time where a unique sock has been removed from the box based on its name and its owner
@@ -218,6 +229,22 @@ class Db():
                                 WHERE sock=:sock AND owner=:owner
                                 ORDER BY time DESC;""", data).fetchall()
         return [i[0] for i in query]
+
+    def get_socks_hist_by_color(self, owner: str, color: str) -> list:
+        """
+        hyp:
+        return history for all socks of color <color>
+        """
+        data = {"owner": owner, "color": color}
+        query1 = self.__cur.execute("""SELECT STRFTIME("%d/%m/%Y %H:%M:%S", DATETIME(time, "+1 hour"))
+                           AS time_formatted FROM beginning
+                           JOIN socks ON socks.name=beginning.sock AND socks.owner=beginning.owner
+                           WHERE socks.owner=:owner AND socks.color=:color;""", data).fetchall()
+        query2 = self.__cur.execute("""SELECT STRFTIME("%d/%m/%Y %H:%M:%S", DATETIME(time, "+1 hour"))
+                           AS ending_formatted FROM ending
+                           JOIN socks ON socks.name=ending.sock AND socks.owner=ending.owner
+                           WHERE socks.owner=:owner AND socks.color=:color;""", data).fetchall()
+        return list(zip(query1, query2))
 
 
 # les test sont nommés a, b, c, etc car unittest les exécutes dans l'ordre alphabétique
@@ -234,7 +261,7 @@ class TestDbMethod(TestCase):
         cls.user = {"username": "test", "password": "test"}
         cls.user1 = {"username": "test1", "password": "test1"}
 
-    def test_a(self: object) -> None:
+    def test_a(self) -> None:
         """
         hyp:
         test if the database creation has ben properly made
@@ -269,7 +296,7 @@ class TestDbMethod(TestCase):
                 "There has been some problem(s) during the creation of the ending table."
                 )
 
-    def test_b(self: object) -> None:
+    def test_b(self) -> None:
         """
         hyp:
         test if users are properly created
@@ -290,7 +317,7 @@ class TestDbMethod(TestCase):
                     "There has been some problem, the password hash doesn't match the hash pattern."
                     )
 
-    def test_c(self: object) -> None:
+    def test_c(self) -> None:
         """
         hyp:
         test if the user connection system works properly
@@ -314,19 +341,20 @@ class TestDbMethod(TestCase):
                 "The auth token is not properly saved in the database."
                 )
 
-    def test_d(self: object):
+    def test_d(self):
         """
         hyp:
         test if socks are properly created
         """
         name = "testsocks"
         owner = self.user["username"]
-        color = None
-        state = "in the box"
-        self.db.create_socks(name, owner, color, state)
+        color = ""
+        dirty = False 
+        in_box = True
+        self.db.create_socks(name, owner, color, dirty, in_box)
         self.assertEqual(
                 self.db.get_all_socks(),
-                [(name, owner, color, state)],
+                [(name, owner, color, dirty, in_box)],
                 "The sock has not been properly created."
                 )
         self.db.append_usage_history_begin(name, owner)
@@ -345,6 +373,49 @@ class TestDbMethod(TestCase):
                 "The time when the socks has been put in the box has not been properly archived."
                 )
 
+    def test_e(self):
+        """
+        hyp:
+        test if socks' states is properly updated
+        """
+        name = "testsocks"
+        owner = self.user["username"]
+        self.db.set_dirty(name, owner, True)
+        self.assertEqual(self.db.get_all_socks()[0][3], True)
+
+    def test_f(self):
+        """
+        hyp:
+        test if socks' history is correctly fetched by color
+        """
+        color = "blue"
+        self.db.create_socks(color, self.user["username"], color, False, False)
+        self.db.append_usage_history_begin(color, self.user["username"])
+        query1 = self.db.get_sock_beginning(color, self.user["username"])[0]
+        self.assertEqual(
+                query1,
+                strftime("%d/%m/%Y %H:%M:%S", localtime()),
+                "The time when the socks has been put in the box has not been properly archived."
+                )
+        sleep(2)
+        self.db.append_usage_history_end(color, self.user["username"])
+        query2 = self.db.get_sock_ending(color, self.user["username"])[0]
+        self.assertEqual(
+                query2,
+                strftime("%d/%m/%Y %H:%M:%S", localtime()),
+                "The time when the socks has been put in the box has not been properly archived."
+                )
+        begin, end = [i[0] for i in self.db.get_socks_hist_by_color(self.user["username"], color)[0]]
+        self.assertEqual(
+            query1,
+            begin,
+            "The begin usage history is not properly provided when requesting it by color."
+            )
+        self.assertEqual(
+            query2,
+            end,
+            "The end usage history is not properly provided when requesting it by color."
+            )
 
 
 if __name__ == '__main__':
