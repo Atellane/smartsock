@@ -17,7 +17,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('logo.png'); /* Ajoutez l'URL de votre image ici */
+    background: url('../assets/logo.png'); /* Ajoutez l'URL de votre image ici */
     background-size: 50%; /* Réduit la taille de l'image à 50% de ses dimensions d'origine */
     background-repeat: no-repeat; /* Empêche la répétition de l'image */
     background-position: center -95px; /* Remonte de 50px */
